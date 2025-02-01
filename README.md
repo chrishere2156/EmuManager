@@ -18,6 +18,7 @@ Each emulator entry includes:
 - Icon & Name
 - Update Button (Checks for and installs updates)
 - Launch Button (Starts the emulator)
+- in later updates a drop down arrow to select like custom instance like with xenia configs
 
 #### "Add Emulator" System
 If no emulators are added, the main page shows a message guiding users to the Add option.
