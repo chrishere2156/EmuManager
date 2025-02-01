@@ -2,7 +2,7 @@ Emulator Launcher - Features & Development Plan
 
 Note: This project is currently under development.
 
-1. Purpose of the Interface
+**Purpose of the Interface**
 
 This launcher is designed to manage multiple emulators, allowing users to:
 
@@ -12,7 +12,11 @@ Support multiple configuration instances (for emulators like Xenia).
 
 Provide a clean, user-friendly UI with customization options.
 
-2. Main Features & Enhancements
+
+
+
+
+**Main Features & Enhancements**
 
 A) Emulator List (Main Page)
 
@@ -30,6 +34,8 @@ Search & Filter (Quickly find an emulator)
 
 Sorting Options (Default: A-Z, Optional: Last Used)
 
+
+
 B) "Add Emulator" System
 
 If no emulators are added, the main page shows a message guiding users to the Add option.
@@ -42,25 +48,30 @@ Manually add a custom emulator (Custom name, update method, etc.).
 
 Drag & Drop Support (Maybe – only if it’s not too complex)
 
+
+
 C) Emulator Detection
 
 When adding emulators, users can scan a specified folder for existing emulators.
+
+
 
 D) Portable Mode
 
 All settings & emulators should be able to run from a single folder (great for USB drives or multiple PCs).
 
-3. Menu Options
 
-Edit Menu:
+**Menu Options**
+
+**Edit Menu:**
 
 Add Emulator (Opens the emulator setup window).
 
 Help (Optional – might not be needed).
 
-Options Menu:
+**Options Menu:******
 
-1. Settings (Editable via UI & External Config File)
+Settings (Editable via UI & External Config File)
 
 General:
 
@@ -84,11 +95,11 @@ Appearance:
 
 UI Themes (Light, Dark, and potentially more).
 
-3. Exit
+Exit
 
 Closes the program.
 
-4. Future Expansion Ideas (Optional but Interesting)
+**Future Expansion Ideas (Optional but Interesting)**
 
 These are ideas that might be worth considering later:
 
