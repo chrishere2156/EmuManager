@@ -57,6 +57,7 @@ UI Themes (Light, Dark, and potentially more).
 Closes the program.
 
 4. Future Expansion Ideas (Optional but Interesting)
+
 These are ideas that might be worth considering later:
 
 Custom UI Themes (Beyond Light/Dark mode).
