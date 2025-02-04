@@ -63,3 +63,10 @@ Recent Games List (If launching games ever becomes possible).
 Cloud Sync for Settings (Useful for multiple PCs, but complex).
 
 Plugin System (For user scripts and automation features).
+
+Launch game from the UI (i have a feeling only some emulator allow it)
+
+Emulators allowing cmd game launching:
+- Duckstation (https://github.com/stenzek/duckstation/wiki/Command-Line-Arguments)
+- PCSX2 (https://pcsx2.net/docs/post/cli/)
+- 
