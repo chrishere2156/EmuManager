@@ -53,6 +53,9 @@ def mainScreen():
 #if no icon can be found ask
 #optional box: ask user for download so they can update. possible to compare versions?
 def addEmulator():
+    global addScreen
+    if 'addScreen' in globals() and addScreen.winfo_exists():
+        addScreen.destroy()
     addScreen = tk.Tk()
     addScreen.title("Add Emulator")
     addScreen.geometry("500x500")
@@ -96,6 +99,7 @@ def addEmulator():
         gameEntry.pack()
         tk.Button(presetTab, text="Confirm", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
         tk.Button(presetTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
+        tk.Button(presetTab, text="Back", command=lambda: addEmulator()).pack(side=tk.RIGHT, padx=5, pady=5)
     
     emulatorListbox.bind('<<ListboxSelect>>', onSelectPreset)
     
