@@ -1,7 +1,28 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter.filedialog import askopenfilename
 
 selectScreen = tk.Tk() # this tells the program to create a window
+
+#this is a modular entry for each emulator. it will be called when a new emulator is added to the list
+def modularEntry(EmulatorName):
+    frame = tk.Frame(selectScreen, bd=5, relief="groove")
+    frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=5)
+
+    icon = tk.Label(frame, text="Icon", width=10)
+    icon.pack(side=tk.LEFT, padx=5)
+
+    emu_name = tk.Label(frame, text=EmulatorName, width=20)
+    emu_name.pack(side=tk.LEFT, padx=5)
+
+    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: None)
+    launch_button.pack(side=tk.RIGHT, padx=5)
+    
+    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: None)
+    game_launch_button.pack(side=tk.RIGHT, padx=5)
+    
+    update_button = tk.Button(frame, text="Update", command=lambda: None)
+    update_button.pack(side=tk.RIGHT, padx=5)
 
 # Opens main app window apon launch
 def mainScreen():
@@ -32,10 +53,71 @@ def mainScreen():
 #if no icon can be found ask
 #optional box: ask user for download so they can update. possible to compare versions?
 def addEmulator():
-    addEmu = tk.Tk()
-    #emuAdd = askopenfilename()
-    #print(emuAdd)
-    addEmu.mainloop()
+    addScreen = tk.Tk()
+    addScreen.title("Add Emulator")
+    addScreen.geometry("500x500")
+
+    # Tabs for preset and custom emulators
+    tabControl = tk.ttk.Notebook(addScreen)
+    
+    # Preset Emulator Tab
+    presetTab = tk.Frame(tabControl, relief="groove", bd=5)
+    tabControl.add(presetTab, text='Preset Emulator')
+    
+    # Custom Emulator Tab
+    customTab = tk.Frame(tabControl, relief="groove", bd=5)
+    tabControl.add(customTab, text='Custom Emulator')
+    
+    tabControl.pack(expand=1, fill="both")
+    
+    # Preset Emulator Tab Content
+    presetLabel = tk.Label(presetTab, text="Select an Emulator from the list")
+    presetLabel.pack(pady=10)
+    
+    # List of emulators (example list, replace with actual file reading)
+    emulators = ["Emulator1", "Emulator2", "Emulator3"]
+    emulators.sort()
+    
+    emulatorListbox = tk.Listbox(presetTab)
+    for emulator in emulators:
+        emulatorListbox.insert(tk.END, emulator)
+    emulatorListbox.pack(pady=10)
+    
+    def onSelectPreset(event):
+        selectedEmulator = emulatorListbox.get(emulatorListbox.curselection())
+        for widget in presetTab.winfo_children():
+            widget.destroy()
+        tk.Label(presetTab, text=f"Selected Emulator: {selectedEmulator}").pack(pady=10)
+        tk.Label(presetTab, text="Emulator EXE Location").pack()
+        exeEntry = tk.Entry(presetTab)
+        exeEntry.pack()
+        tk.Label(presetTab, text="Game Location").pack()
+        gameEntry = tk.Entry(presetTab)
+        gameEntry.pack()
+        tk.Button(presetTab, text="Confirm", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
+        tk.Button(presetTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
+    
+    emulatorListbox.bind('<<ListboxSelect>>', onSelectPreset)
+    
+    # Custom Emulator Tab Content
+    tk.Label(customTab, text="Name of Emulator").pack(pady=10)
+    customNameEntry = tk.Entry(customTab)
+    customNameEntry.pack()
+    
+    tk.Label(customTab, text="Emulator EXE Location").pack(pady=10)
+    customExeEntry = tk.Entry(customTab)
+    customExeEntry.pack()
+    
+    tk.Label(customTab, text="Game Location").pack(pady=10)
+    customGameEntry = tk.Entry(customTab)
+    customGameEntry.pack()
+    
+    tk.Label(customTab, text="Update Link (Optional)").pack(pady=10)
+    customUpdateEntry = tk.Entry(customTab)
+    customUpdateEntry.pack()
+    
+    tk.Button(customTab, text="Confirm", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
+    tk.Button(customTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
 
 #settings like dark mode, resolution size, font size(maybe), seperate tab for emulator list and edit ability.
 #it would be wise changing this to have a config file
