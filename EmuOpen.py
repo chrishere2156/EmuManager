@@ -58,7 +58,8 @@ def addEmulator():
         addScreen.destroy()
     addScreen = tk.Toplevel(selectScreen)
     addScreen.title("Add Emulator")
-    addScreen.geometry("500x500")
+    #addScreen.geometry("500x500")
+    addScreen.geometry('{}x{}+{}+{}'.format(*windowPos()))
 
     # Tabs for preset and custom emulators
     tabControl = tk.ttk.Notebook(addScreen)
@@ -127,34 +128,26 @@ def addEmulator():
 #it would be wise changing this to have a config file
 def settings():
     settingsScreen = tk.Tk()
+    settingsScreen.geometry('{}x{}+{}+{}'.format(*windowPos()))
     #emuAdd = askopenfilename()
     #print(emuAdd)
     settingsScreen.mainloop()
 
-#this is only here for test. i think ill need seperate openwindow for each task
-#def openWindow():
-    #newWindow = 
-    #pass
-
 #for the 'Help' option. only a placeholder at the moment so i can test functions easily
 def help():
-    winPos()
-    winSize()
-    displaySize()
+    print(windowPos())
 
-#x,y positon of window
-def winPos():
-    print(selectScreen.winfo_x())
-    print(selectScreen.winfo_y())
-
-#size of main program window
-def winSize():
-    print(selectScreen.winfo_width())
-    print(selectScreen.winfo_height())
-
-#display size of monitor. this is seems incorrect but i only find out when i implement more.
-def displaySize():
-    print(selectScreen.winfo_screenwidth())
-    print(selectScreen.winfo_screenheight())
+#gets the current length and width of the window and sets the window to spawn in the middle of the screen
+def windowPos():
+    selectScreen.update_idletasks()
+    x = selectScreen.winfo_x()
+    y = selectScreen.winfo_y()
+    width = selectScreen.winfo_width()
+    height = selectScreen.winfo_height()
+    new_width = 500
+    new_height = 500
+    new_x = x + (width // 2) - (new_width // 2)
+    new_y = y + (height // 2) - (new_height // 2)
+    return new_width, new_height, new_x, new_y
 
 mainScreen() #runs whole program
