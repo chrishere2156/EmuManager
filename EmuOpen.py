@@ -56,7 +56,7 @@ def addEmulator():
     global addScreen
     if 'addScreen' in globals() and addScreen.winfo_exists():
         addScreen.destroy()
-    addScreen = tk.Tk()
+    addScreen = tk.Toplevel(selectScreen)
     addScreen.title("Add Emulator")
     addScreen.geometry("500x500")
 
