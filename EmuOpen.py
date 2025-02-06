@@ -98,6 +98,25 @@ def addEmulator():
         tk.Label(presetTab, text="Game Location").pack()
         gameEntry = tk.Entry(presetTab)
         gameEntry.pack()
+        
+        def selectExe():
+            exe_path = askopenfilename(filetypes=[("Executable files", "*.exe")], parent=presetTab)
+            if exe_path:
+                exeEntry.delete(0, tk.END)
+                exeEntry.insert(0, exe_path)
+        
+        def selectGameFolder():
+            game_path = tk.filedialog.askdirectory(parent=presetTab)
+            if game_path:
+                gameEntry.delete(0, tk.END)
+                gameEntry.insert(0, game_path)
+        
+        exeButton = tk.Button(presetTab, text="Select EXE", command=selectExe)
+        exeButton.pack(pady=5)
+        
+        gameButton = tk.Button(presetTab, text="Select Game Folder", command=selectGameFolder)
+        gameButton.pack(pady=5)
+
         tk.Button(presetTab, text="Confirm", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
         tk.Button(presetTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
         tk.Button(presetTab, text="Back", command=lambda: addEmulator()).pack(side=tk.RIGHT, padx=5, pady=5)
