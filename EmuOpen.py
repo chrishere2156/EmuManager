@@ -1,6 +1,25 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.filedialog import askopenfilename
+import os
+
+# Function to read emulator details from a text file
+def read_emulator_details(file_path):
+    emulators = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            details = line.strip().split(',')
+            if len(details) == 4:
+                emulators.append({
+                    'name': details[0],
+                    'exe_path': details[1],
+                    'game_path': details[2],
+                    'update_link': details[3]
+                })
+    return emulators
+
+# Load emulator details from the text file
+emulator_details = read_emulator_details('EMU.txt')
 
 selectScreen = tk.Tk() # this tells the program to create a window
 
@@ -78,8 +97,8 @@ def addEmulator():
     presetLabel = tk.Label(presetTab, text="Select an Emulator from the list")
     presetLabel.pack(pady=10)
     
-    # List of emulators (example list, replace with actual file reading)
-    emulators = ["Emulator1", "Emulator2", "Emulator3"]
+    # List of emulators
+    emulators = [emulator['name'] for emulator in emulator_details]
     emulators.sort()
     
     emulatorListbox = tk.Listbox(presetTab)
@@ -87,39 +106,62 @@ def addEmulator():
         emulatorListbox.insert(tk.END, emulator)
     emulatorListbox.pack(pady=10)
     
+    # Function to add a emualtor based on the selected preset.
     def onSelectPreset(event):
         selectedEmulator = emulatorListbox.get(emulatorListbox.curselection())
-        for widget in presetTab.winfo_children():
-            widget.destroy()
-        tk.Label(presetTab, text=f"Selected Emulator: {selectedEmulator}").pack(pady=10)
-        tk.Label(presetTab, text="Emulator EXE Location").pack()
-        exeEntry = tk.Entry(presetTab)
-        exeEntry.pack()
-        tk.Label(presetTab, text="Game Location").pack()
-        gameEntry = tk.Entry(presetTab)
-        gameEntry.pack()
-        
-        def selectExe():
-            exe_path = askopenfilename(filetypes=[("Executable files", "*.exe")], parent=presetTab)
-            if exe_path:
-                exeEntry.delete(0, tk.END)
-                exeEntry.insert(0, exe_path)
-        
-        def selectGameFolder():
-            game_path = tk.filedialog.askdirectory(parent=presetTab)
-            if game_path:
-                gameEntry.delete(0, tk.END)
-                gameEntry.insert(0, game_path)
-        
-        exeButton = tk.Button(presetTab, text="Select EXE", command=selectExe)
-        exeButton.pack(pady=5)
-        
-        gameButton = tk.Button(presetTab, text="Select Game Folder", command=selectGameFolder)
-        gameButton.pack(pady=5)
+        emulator_info = next((emulator for emulator in emulator_details if emulator['name'] == selectedEmulator), None)
+        if emulator_info:
+            for widget in presetTab.winfo_children():
+                widget.destroy()
+            tk.Label(presetTab, text=f"Selected Emulator: {selectedEmulator}").pack(pady=10)
+            tk.Label(presetTab, text="Emulator EXE Location").pack()
+            presetEXE = tk.Entry(presetTab)
+            presetEXE.insert(0, emulator_info['exe_path'])
+            presetEXE.pack()
+            tk.Label(presetTab, text="Game Location").pack()
+            presetGameLoc = tk.Entry(presetTab)
+            presetGameLoc.insert(0, emulator_info['game_path'])
+            presetGameLoc.pack()
+            
+            def selectExe():
+                exe_path = askopenfilename(filetypes=[("Executable files", "*.exe")], parent=presetTab)
+                if exe_path:
+                    presetEXE.delete(0, tk.END)
+                    presetEXE.insert(0, exe_path)
+            
+            def selectGameFolder():
+                game_path = tk.filedialog.askdirectory(parent=presetTab)
+                if game_path:
+                    presetGameLoc.delete(0, tk.END)
+                    presetGameLoc.insert(0, game_path)
+            
+            exeButton = tk.Button(presetTab, text="Select EXE", command=selectExe)
+            exeButton.pack(pady=5)
+            
+            gameButton = tk.Button(presetTab, text="Select Game Folder", command=selectGameFolder)
+            gameButton.pack(pady=5)
 
-        tk.Button(presetTab, text="Confirm", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
-        tk.Button(presetTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
-        tk.Button(presetTab, text="Back", command=lambda: addEmulator()).pack(side=tk.RIGHT, padx=5, pady=5)
+            def savePresetEmulator():
+                preset_name = selectedEmulator
+                preset_exe_path = presetEXE.get()
+                preset_game_path = presetGameLoc.get()
+                preset_update_link = emulator_info['update_link']
+                
+                with open("Emu.txt", 'r') as file:
+                    lines = file.readlines()
+                
+                with open("Emu.txt", 'w') as file:
+                    for line in lines:
+                        if line.startswith(preset_name + ','):
+                            file.write(f"{preset_name},{preset_exe_path},{preset_game_path},{preset_update_link}\n")
+                        else:
+                            file.write(line)
+                
+                modularEntry(EmulatorName=preset_name)
+
+            tk.Button(presetTab, text="Confirm", command=lambda: savePresetEmulator()).pack(side=tk.RIGHT, padx=5, pady=5)
+            tk.Button(presetTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
+            tk.Button(presetTab, text="Back", command=lambda: addEmulator()).pack(side=tk.RIGHT, padx=5, pady=5)
     
     emulatorListbox.bind('<<ListboxSelect>>', onSelectPreset)
     
@@ -131,16 +173,29 @@ def addEmulator():
     tk.Label(customTab, text="Emulator EXE Location").pack(pady=10)
     customExeEntry = tk.Entry(customTab)
     customExeEntry.pack()
-    
+    customExeButton = tk.Button(customTab, text="Select EXE", command=lambda: customExeEntry.insert(0, askopenfilename(filetypes=[("Executable files", "*.exe")], parent=customTab)))
+    customExeButton.pack(pady=5)
+
     tk.Label(customTab, text="Game Location").pack(pady=10)
     customGameEntry = tk.Entry(customTab)
     customGameEntry.pack()
-    
+    customGameButton = tk.Button(customTab, text="Select Game Folder", command=lambda: customGameEntry.insert(0, tk.filedialog.askdirectory(parent=customTab)))
+    customGameButton.pack(pady=5)
+
     tk.Label(customTab, text="Update Link (Optional)").pack(pady=10)
     customUpdateEntry = tk.Entry(customTab)
     customUpdateEntry.pack()
     
-    tk.Button(customTab, text="Confirm", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
+    def saveCustomEmulator():
+        custom_name = customNameEntry.get()
+        custom_exe_path = customExeEntry.get()
+        custom_game_path = customGameEntry.get()
+        custom_update_link = customUpdateEntry.get()
+        with open("Emu.txt", 'a') as file:
+            file.write(f"{custom_name},{custom_exe_path},{custom_game_path},{custom_update_link}\n")
+        modularEntry(EmulatorName=custom_name)
+    
+    tk.Button(customTab, text="Confirm", command=saveCustomEmulator).pack(side=tk.RIGHT, padx=5, pady=5)
     tk.Button(customTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
 
 #settings like dark mode, resolution size, font size(maybe), seperate tab for emulator list and edit ability.
