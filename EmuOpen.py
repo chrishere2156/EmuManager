@@ -28,22 +28,23 @@ selectScreen = tk.Tk() # this tells the program to create a window
 
 # This is a modular entry for each emulator. It will be called when a new emulator is added to the list
 def modularEntry(EmulatorName, exe_path, game_path, update_link):
-    frame = tk.Frame(selectScreen, bd=5, relief="groove")
-    frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=5)
+    frame = tk.Frame(selectScreen, bd=5, relief="groove", height=50)
+    frame.pack_propagate(False)
+    frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
 
-    icon = tk.Label(frame, text="Icon", width=10)
+    icon = tk.Label(frame, text="Icon", width=10, height=2)
     icon.pack(side=tk.LEFT, padx=5)
 
-    emu_name = tk.Label(frame, text=EmulatorName, width=20)
+    emu_name = tk.Label(frame, text=EmulatorName, width=20, height=2)
     emu_name.pack(side=tk.LEFT, padx=5)
 
-    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path))
+    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path), height=2)
     launch_button.pack(side=tk.RIGHT, padx=5)
     
-    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: os.startfile(game_path))
+    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: os.startfile(game_path), height=2)
     game_launch_button.pack(side=tk.RIGHT, padx=5)
     
-    update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link))
+    update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link), height=2)
     update_button.pack(side=tk.RIGHT, padx=5)
 
 # Opens main app window upon launch
