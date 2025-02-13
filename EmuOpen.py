@@ -21,10 +21,28 @@ def read_emulator_details(file_path):
 # Load emulator details from the text file
 emulator_details = read_emulator_details('EMU.txt')
 
+# Function to read selected emulator details from a text file
+def read_selected_emulators(file_path):
+    selected_emulators = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            details = line.strip().split(',')
+            if len(details) == 4:
+                selected_emulators.append({
+                    'name': details[0],
+                    'exe_path': details[1],
+                    'game_path': details[2],
+                    'update_link': details[3]
+                })
+    return selected_emulators
+
+# Load selected emulator details from the text file
+selected_emulators = read_selected_emulators('selectedEmu.txt')
+
 selectScreen = tk.Tk() # this tells the program to create a window
 
 #this is a modular entry for each emulator. it will be called when a new emulator is added to the list
-def modularEntry(EmulatorName):
+def modularEntry(EmulatorName, exe_path, game_path, update_link):
     frame = tk.Frame(selectScreen, bd=5, relief="groove")
     frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=5)
 
@@ -34,16 +52,16 @@ def modularEntry(EmulatorName):
     emu_name = tk.Label(frame, text=EmulatorName, width=20)
     emu_name.pack(side=tk.LEFT, padx=5)
 
-    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: None)
+    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path))
     launch_button.pack(side=tk.RIGHT, padx=5)
     
-    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: None)
+    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: os.startfile(game_path))
     game_launch_button.pack(side=tk.RIGHT, padx=5)
     
-    update_button = tk.Button(frame, text="Update", command=lambda: None)
+    update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link))
     update_button.pack(side=tk.RIGHT, padx=5)
 
-# Opens main app window apon launch
+
 def mainScreen():
     selectScreen.title("Emulator Selector") #sets titlebar name
     selectScreen.geometry("1280x720") #resoultion it displays in (change this later to open to a settings dependent size that user can pick)
@@ -64,6 +82,20 @@ def mainScreen():
     opts.add_command(label ='Exit', command = selectScreen.quit)
 
     selectScreen.config(menu = menubar) #not sure but without it, it wont work lmao
+
+    # Opens main app window upon launch
+    def validate_and_add_entry(EmulatorName, exe_path, game_path, update_link):
+        modularEntry(EmulatorName, exe_path, game_path, update_link)
+
+    # Create entries for selected emulators
+    for emulator in selected_emulators:
+        validate_and_add_entry(
+            EmulatorName=emulator['name'],
+            exe_path=emulator['exe_path'] if emulator['exe_path'] else None,
+            game_path=emulator['game_path'] if emulator['game_path'] else None,
+            update_link=emulator['update_link'] if emulator['update_link'] else None
+        )
+
     selectScreen.mainloop() #nothing above runs untill this is reached in code
 
 #screen to explain steps of adding a new emulator to the list
@@ -150,14 +182,14 @@ def addEmulator():
                 with open("Emu.txt", 'r') as file:
                     lines = file.readlines()
                 
-                with open("Emu.txt", 'w') as file:
+                with open("selectedEmu.txt", 'w') as file:
                     for line in lines:
                         if line.startswith(preset_name + ','):
                             file.write(f"{preset_name},{preset_exe_path},{preset_game_path},{preset_update_link}\n")
                         else:
                             file.write(line)
                 
-                modularEntry(EmulatorName=preset_name)
+                modularEntry(EmulatorName=preset_name, exe_path=preset_exe_path, game_path=preset_game_path, update_link=preset_update_link)
 
             tk.Button(presetTab, text="Confirm", command=lambda: savePresetEmulator()).pack(side=tk.RIGHT, padx=5, pady=5)
             tk.Button(presetTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
@@ -191,9 +223,9 @@ def addEmulator():
         custom_exe_path = customExeEntry.get()
         custom_game_path = customGameEntry.get()
         custom_update_link = customUpdateEntry.get()
-        with open("Emu.txt", 'a') as file:
+        with open("selectedEmu.txt", 'a') as file:
             file.write(f"{custom_name},{custom_exe_path},{custom_game_path},{custom_update_link}\n")
-        modularEntry(EmulatorName=custom_name)
+        modularEntry(EmulatorName=custom_name, exe_path=custom_exe_path, game_path=custom_game_path, update_link=custom_update_link)
     
     tk.Button(customTab, text="Confirm", command=saveCustomEmulator).pack(side=tk.RIGHT, padx=5, pady=5)
     tk.Button(customTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
