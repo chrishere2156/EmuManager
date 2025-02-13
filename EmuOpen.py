@@ -26,7 +26,7 @@ selected_emulators = read_emulators('selectedEmu.txt')
 
 selectScreen = tk.Tk() # this tells the program to create a window
 
-#this is a modular entry for each emulator. it will be called when a new emulator is added to the list
+# This is a modular entry for each emulator. It will be called when a new emulator is added to the list
 def modularEntry(EmulatorName, exe_path, game_path, update_link):
     frame = tk.Frame(selectScreen, bd=5, relief="groove")
     frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=5)
@@ -46,21 +46,21 @@ def modularEntry(EmulatorName, exe_path, game_path, update_link):
     update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link))
     update_button.pack(side=tk.RIGHT, padx=5)
 
-
+# Opens main app window upon launch
 def mainScreen():
-    selectScreen.title("Emulator Selector") #sets titlebar name
-    selectScreen.geometry("1280x720") #resoultion it displays in (change this later to open to a settings dependent size that user can pick)
+    selectScreen.title("Emulator Selector") # Sets titlebar name
+    selectScreen.geometry("1280x720") # Resolution it displays in
 
-    menubar = tk.Menu(selectScreen) #add bar at top for menu options
+    menubar = tk.Menu(selectScreen) # Add bar at top for menu options
 
-    #adds the 'Edit' tab
+    # Adds the 'Edit' tab
     add = tk.Menu(menubar, tearoff = 0)
     menubar.add_cascade(label ='Edit', menu = add)
     add.add_command(label ='Add Emulator', command = addEmulator)
     add.add_separator()
     add.add_command(label ='Help', command = help)
 
-    #adds the 'Options' tab
+    # Adds the 'Options' tab
     opts = tk.Menu(menubar, tearoff = 0)
     menubar.add_cascade(label ='Options', menu = opts)
     opts.add_command(label ='Settings', command = settings)
@@ -81,13 +81,13 @@ def mainScreen():
             update_link=emulator['update_link'] if emulator['update_link'] else None
         )
 
-    selectScreen.mainloop() #nothing above runs untill this is reached in code
+    selectScreen.mainloop() # Nothing above runs until this is reached in code
 
-#screen to explain steps of adding a new emulator to the list
-#user picks name
-#where its stored on computer
-#if no icon can be found ask
-#optional box: ask user for download so they can update. possible to compare versions?
+# Screen to explain steps of adding a new emulator to the list
+# User picks name
+# Where it's stored on computer
+# If no icon can be found ask
+# Optional box: ask user for download so they can update. Possible to compare versions?
 def addEmulator():
     global addScreen
     if 'addScreen' in globals() and addScreen.winfo_exists():
@@ -123,7 +123,7 @@ def addEmulator():
         emulatorListbox.insert(tk.END, emulator)
     emulatorListbox.pack(pady=10)
     
-    # Function to add a emualtor based on the selected preset.
+    # Function to add an emulator based on the selected preset.
     def onSelectPreset(event):
         selectedEmulator = emulatorListbox.get(emulatorListbox.curselection())
         emulator_info = next((emulator for emulator in emulator_details if emulator['name'] == selectedEmulator), None)
@@ -140,12 +140,14 @@ def addEmulator():
             presetGameLoc.insert(0, emulator_info['game_path'])
             presetGameLoc.pack()
             
+            # Opens file explorer to select the emulator exe
             def selectExe():
                 exe_path = askopenfilename(filetypes=[("Executable files", "*.exe")], parent=presetTab)
                 if exe_path:
                     presetEXE.delete(0, tk.END)
                     presetEXE.insert(0, exe_path)
             
+            # Opens file explorer to select the game folder
             def selectGameFolder():
                 game_path = tk.filedialog.askdirectory(parent=presetTab)
                 if game_path:
@@ -158,6 +160,7 @@ def addEmulator():
             gameButton = tk.Button(presetTab, text="Select Game Folder", command=selectGameFolder)
             gameButton.pack(pady=5)
 
+            # Save the preset emulator details to the selectedEmu.txt file
             def savePresetEmulator():
                 preset_name = selectedEmulator
                 preset_exe_path = presetEXE.get()
@@ -203,6 +206,7 @@ def addEmulator():
     customUpdateEntry = tk.Entry(customTab)
     customUpdateEntry.pack()
     
+    # Save the custom emulator details to the selectedEmu.txt file
     def saveCustomEmulator():
         custom_name = customNameEntry.get()
         custom_exe_path = customExeEntry.get()
@@ -215,8 +219,8 @@ def addEmulator():
     tk.Button(customTab, text="Confirm", command=saveCustomEmulator).pack(side=tk.RIGHT, padx=5, pady=5)
     tk.Button(customTab, text="Cancel", command=lambda: None).pack(side=tk.RIGHT, padx=5, pady=5)
 
-#settings like dark mode, resolution size, font size(maybe), seperate tab for emulator list and edit ability.
-#it would be wise changing this to have a config file
+# Settings like dark mode, resolution size, font size (maybe), separate tab for emulator list and edit ability.
+# It would be wise changing this to have a config file
 def settings():
     settingsScreen = tk.Tk()
     settingsScreen.geometry('{}x{}+{}+{}'.format(*windowPos()))
@@ -224,11 +228,11 @@ def settings():
     #print(emuAdd)
     settingsScreen.mainloop()
 
-#for the 'Help' option. only a placeholder at the moment so i can test functions easily
+# For the 'Help' option. Only a placeholder at the moment so I can test functions easily
 def help():
     print(windowPos())
 
-#gets the current length and width of the window and sets the window to spawn in the middle of the screen
+# Gets the current length and width of the window and sets the window to spawn in the middle of the screen
 def windowPos():
     selectScreen.update_idletasks()
     x = selectScreen.winfo_x()
@@ -241,4 +245,4 @@ def windowPos():
     new_y = y + (height // 2) - (new_height // 2)
     return new_width, new_height, new_x, new_y
 
-mainScreen() #runs whole program
+mainScreen() # Runs the whole program
