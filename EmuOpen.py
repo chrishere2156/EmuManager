@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfilename
 import os
 
 # Function to read emulator details from a text file
-def read_emulator_details(file_path):
+def read_emulators(file_path):
     emulators = []
     with open(file_path, 'r') as file:
         for line in file:
@@ -19,25 +19,10 @@ def read_emulator_details(file_path):
     return emulators
 
 # Load emulator details from the text file
-emulator_details = read_emulator_details('EMU.txt')
-
-# Function to read selected emulator details from a text file
-def read_selected_emulators(file_path):
-    selected_emulators = []
-    with open(file_path, 'r') as file:
-        for line in file:
-            details = line.strip().split(',')
-            if len(details) == 4:
-                selected_emulators.append({
-                    'name': details[0],
-                    'exe_path': details[1],
-                    'game_path': details[2],
-                    'update_link': details[3]
-                })
-    return selected_emulators
+emulator_details = read_emulators('EMU.txt')
 
 # Load selected emulator details from the text file
-selected_emulators = read_selected_emulators('selectedEmu.txt')
+selected_emulators = read_emulators('selectedEmu.txt')
 
 selectScreen = tk.Tk() # this tells the program to create a window
 
