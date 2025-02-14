@@ -3,72 +3,18 @@ import tkinter.ttk as ttk
 from tkinter.filedialog import askopenfilename
 import os
 
-# Function to read emulator details from a text file
-def read_emulators(file_path):
-    emulators = []
-    with open(file_path, 'r') as file:
-        for line in file:
-            details = line.strip().split(',')
-            if len(details) == 4:
-                emulators.append({
-                    'name': details[0],
-                    'exe_path': details[1],
-                    'game_path': details[2],
-                    'update_link': details[3]
-                })
-    return emulators
-
-# Load emulator details from the text file
-emulator_details = read_emulators('EMU.txt')
-
-# Load selected emulator details from the text file
-selected_emulators = read_emulators('selectedEmu.txt')
-
-selectScreen = tk.Tk() # this tells the program to create a window
-
-# Function to list all .exe files in the specified directory and its subdirectories
-def listGameExecutables(game_path):
-    gameWindow = tk.Toplevel(selectScreen)
-    gameWindow.title("Select Game Executable")
-    gameWindow.geometry('{}x{}+{}+{}'.format(*windowPos()))
-
-    exe_files = []
-    for root, dirs, files in os.walk(game_path):
-        for file in files:
-            if file.endswith(".exe"):
-                exe_files.append(os.path.join(root, file))
-
-    exeListbox = tk.Listbox(gameWindow)
-    for exe in exe_files:
-        exeListbox.insert(tk.END, exe)
-    exeListbox.pack(pady=10, fill=tk.BOTH, expand=True)
-
-    def launchSelectedGame():
-        selectedExe = exeListbox.get(exeListbox.curselection())
-        os.startfile(selectedExe)
-
-    tk.Button(gameWindow, text="Launch Selected Game", command=launchSelectedGame).pack(pady=5)
-
-# This is a modular entry for each emulator. It will be called when a new emulator is added to the list
-def modularEntry(EmulatorName, exe_path, game_path, update_link):
-    frame = tk.Frame(selectScreen, bd=5, relief="groove", height=50)
-    frame.pack_propagate(False)
-    frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
-
-    icon = tk.Label(frame, text="Icon", width=10, height=2)
-    icon.pack(side=tk.LEFT, padx=5)
-
-    emu_name = tk.Label(frame, text=EmulatorName, width=20, height=2)
-    emu_name.pack(side=tk.LEFT, padx=5)
-
-    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path), height=2)
-    launch_button.pack(side=tk.RIGHT, padx=5)
-    
-    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: listGameExecutables(game_path), height=2)
-    game_launch_button.pack(side=tk.RIGHT, padx=5)
-    
-    update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link), height=2)
-    update_button.pack(side=tk.RIGHT, padx=5)
+# Gets the current length and width of the window and sets the window to spawn in the middle of the screen
+def windowPos():
+    selectScreen.update_idletasks()
+    x = selectScreen.winfo_x()
+    y = selectScreen.winfo_y()
+    width = selectScreen.winfo_width()
+    height = selectScreen.winfo_height()
+    new_width = 500
+    new_height = 500
+    new_x = x + (width // 2) - (new_width // 2)
+    new_y = y + (height // 2) - (new_height // 2)
+    return new_width, new_height, new_x, new_y
 
 # Opens main app window upon launch
 def mainScreen():
@@ -106,6 +52,28 @@ def mainScreen():
         )
 
     selectScreen.mainloop() # Nothing above runs until this is reached in code
+
+# This is a modular entry for each emulator. It will be called when a new emulator is added to the list
+def modularEntry(EmulatorName, exe_path, game_path, update_link):
+    frame = tk.Frame(selectScreen, bd=5, relief="groove", height=50)
+    frame.pack_propagate(False)
+    frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
+
+    icon = tk.Label(frame, text="Icon", width=10, height=2)
+    icon.pack(side=tk.LEFT, padx=5)
+
+    emu_name = tk.Label(frame, text=EmulatorName, width=20, height=2)
+    emu_name.pack(side=tk.LEFT, padx=5)
+
+    launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path), height=2)
+    launch_button.pack(side=tk.RIGHT, padx=5)
+    
+    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: listGameExecutables(game_path), height=2)
+    game_launch_button.pack(side=tk.RIGHT, padx=5)
+    
+    update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link), height=2)
+    update_button.pack(side=tk.RIGHT, padx=5)
+
 
 # Screen to explain steps of adding a new emulator to the list
 # User picks name
@@ -257,17 +225,51 @@ def settings():
 def help():
     print(windowPos())
 
-# Gets the current length and width of the window and sets the window to spawn in the middle of the screen
-def windowPos():
-    selectScreen.update_idletasks()
-    x = selectScreen.winfo_x()
-    y = selectScreen.winfo_y()
-    width = selectScreen.winfo_width()
-    height = selectScreen.winfo_height()
-    new_width = 500
-    new_height = 500
-    new_x = x + (width // 2) - (new_width // 2)
-    new_y = y + (height // 2) - (new_height // 2)
-    return new_width, new_height, new_x, new_y
+# Function to read emulator details from a text file
+def read_emulators(file_path):
+    emulators = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            details = line.strip().split(',')
+            if len(details) == 4:
+                emulators.append({
+                    'name': details[0],
+                    'exe_path': details[1],
+                    'game_path': details[2],
+                    'update_link': details[3]
+                })
+    return emulators
 
-mainScreen() # Runs the whole program
+# Function to list all .exe files in the specified directory and its subdirectories
+def listGameExecutables(game_path):
+    gameWindow = tk.Toplevel(selectScreen)
+    gameWindow.title("Select Game Executable")
+    gameWindow.geometry('{}x{}+{}+{}'.format(*windowPos()))
+
+    exe_files = []
+    for root, dirs, files in os.walk(game_path):
+        for file in files:
+            if file.endswith(".exe"):
+                exe_files.append(os.path.join(root, file))
+
+    exeListbox = tk.Listbox(gameWindow)
+    for exe in exe_files:
+        exeListbox.insert(tk.END, exe)
+    exeListbox.pack(pady=10, fill=tk.BOTH, expand=True)
+
+    def launchSelectedGame():
+        selectedExe = exeListbox.get(exeListbox.curselection())
+        os.startfile(selectedExe)
+
+    tk.Button(gameWindow, text="Launch Selected Game", command=launchSelectedGame).pack(pady=5)
+
+# SETUP PART
+# Load emulator details from the text file
+emulator_details = read_emulators('EMU.txt')
+# Load selected emulator details from the text file
+selected_emulators = read_emulators('selectedEmu.txt')
+# This is needed to define the main window. Better to be outside of mainScreen function to be accessed by other functions
+selectScreen = tk.Tk() 
+
+#Program starts here. This is the first function that runs
+mainScreen()
