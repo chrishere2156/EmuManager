@@ -68,7 +68,7 @@ def modularEntry(EmulatorName, exe_path, game_path, update_link):
     launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path), height=2)
     launch_button.pack(side=tk.RIGHT, padx=5)
     
-    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: os.startfile(game_path), height=2)
+    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: None)#os.startfile(game_path), height=2) disabled for now
     game_launch_button.pack(side=tk.RIGHT, padx=5)
     
     update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link), height=2)
