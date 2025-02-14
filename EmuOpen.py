@@ -26,6 +26,29 @@ selected_emulators = read_emulators('selectedEmu.txt')
 
 selectScreen = tk.Tk() # this tells the program to create a window
 
+# Function to list all .exe files in the specified directory and its subdirectories
+def listGameExecutables(game_path):
+    gameWindow = tk.Toplevel(selectScreen)
+    gameWindow.title("Select Game Executable")
+    gameWindow.geometry('{}x{}+{}+{}'.format(*windowPos()))
+
+    exe_files = []
+    for root, dirs, files in os.walk(game_path):
+        for file in files:
+            if file.endswith(".exe"):
+                exe_files.append(os.path.join(root, file))
+
+    exeListbox = tk.Listbox(gameWindow)
+    for exe in exe_files:
+        exeListbox.insert(tk.END, exe)
+    exeListbox.pack(pady=10, fill=tk.BOTH, expand=True)
+
+    def launchSelectedGame():
+        selectedExe = exeListbox.get(exeListbox.curselection())
+        os.startfile(selectedExe)
+
+    tk.Button(gameWindow, text="Launch Selected Game", command=launchSelectedGame).pack(pady=5)
+
 # This is a modular entry for each emulator. It will be called when a new emulator is added to the list
 def modularEntry(EmulatorName, exe_path, game_path, update_link):
     frame = tk.Frame(selectScreen, bd=5, relief="groove", height=50)
@@ -41,7 +64,7 @@ def modularEntry(EmulatorName, exe_path, game_path, update_link):
     launch_button = tk.Button(frame, text="Launch Emulator", command=lambda: os.startfile(exe_path), height=2)
     launch_button.pack(side=tk.RIGHT, padx=5)
     
-    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: os.startfile(game_path), height=2)
+    game_launch_button = tk.Button(frame, text="Launch Game", command=lambda: listGameExecutables(game_path), height=2)
     game_launch_button.pack(side=tk.RIGHT, padx=5)
     
     update_button = tk.Button(frame, text="Update", command=lambda: os.startfile(update_link), height=2)
@@ -136,6 +159,7 @@ def addEmulator():
             presetEXE = tk.Entry(presetTab)
             presetEXE.insert(0, emulator_info['exe_path'])
             presetEXE.pack()
+            
             tk.Label(presetTab, text="Game Location").pack()
             presetGameLoc = tk.Entry(presetTab)
             presetGameLoc.insert(0, emulator_info['game_path'])
